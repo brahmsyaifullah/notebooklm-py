@@ -1,9 +1,9 @@
-# notebooklm-py
+﻿# notebooklm-py
 <p align="left">
   <img src="https://raw.githubusercontent.com/teng-lin/notebooklm-py/main/notebooklm-py.png" alt="notebooklm-py logo" width="128">
 </p>
 
-**Unofficial Python API and agentic skill for Google NotebookLM.** Full programmatic access to NotebookLM's features—including capabilities the web UI doesn't expose—via Python, CLI, and AI agents like Claude Code, Codex, and OpenClaw.
+**Unofficial Python API and agentic skill for Google NotebookLM.** Full programmatic access to NotebookLM's featuresâ€”including capabilities the web UI doesn't exposeâ€”via Python, CLI, and AI agents like Claude Code, Codex, and OpenClaw.
 
 [![PyPI version](https://img.shields.io/pypi/v/notebooklm-py.svg)](https://pypi.org/project/notebooklm-py/)
 [![Python Version](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13%20%7C%203.14-blue)](https://pypi.org/project/notebooklm-py/)
@@ -15,7 +15,7 @@
 
 **Source & Development**: <https://github.com/teng-lin/notebooklm-py>
 
-> **⚠️ Unofficial Library - Use at Your Own Risk**
+> **âš ï¸ Unofficial Library - Use at Your Own Risk**
 >
 > This library uses **undocumented Google APIs** that can change without notice.
 >
@@ -27,13 +27,13 @@
 
 ## What You Can Build
 
-🤖 **AI Agent Tools** - Integrate NotebookLM into Claude Code, Codex, and other LLM agents. Ships with a root [NotebookLM skill](SKILL.md) for GitHub and `npx skills add` discovery, local `notebooklm skill install` support for Claude Code and `.agents` skill directories, and repo-level Codex guidance in [`AGENTS.md`](AGENTS.md).
+ðŸ¤– **AI Agent Tools** - Integrate NotebookLM into Claude Code, Codex, and other LLM agents. Ships with a root [NotebookLM skill](SKILL.md) for GitHub and `npx skills add` discovery, local `notebooklm skill install` support for Claude Code and `.agents` skill directories, and repo-level Codex guidance in [`AGENTS.md`](AGENTS.md).
 
-📚 **Research Automation** - Bulk-import sources (URLs, PDFs, YouTube, Google Drive), run web/Drive research queries with auto-import, and extract insights programmatically. Build repeatable research pipelines.
+ðŸ“š **Research Automation** - Bulk-import sources (URLs, PDFs, YouTube, Google Drive), run web/Drive research queries with auto-import, and extract insights programmatically. Build repeatable research pipelines.
 
-🎙️ **Content Generation** - Generate Audio Overviews (podcasts), videos, slide decks, quizzes, flashcards, infographics, data tables, mind maps, and study guides. Full control over formats, styles, and output.
+ðŸŽ™ï¸ **Content Generation** - Generate Audio Overviews (podcasts), videos, slide decks, quizzes, flashcards, infographics, data tables, mind maps, and study guides. Full control over formats, styles, and output.
 
-📥 **Downloads & Export** - Download all generated artifacts locally (MP3, MP4, PDF, PNG, CSV, JSON, Markdown). Export to Google Docs/Sheets. **Features the web UI doesn't offer**: batch downloads, quiz/flashcard export in multiple formats, mind map JSON extraction.
+ðŸ“¥ **Downloads & Export** - Download all generated artifacts locally (MP3, MP4, PDF, PNG, CSV, JSON, Markdown). Export to Google Docs/Sheets. **Features the web UI doesn't offer**: batch downloads, quiz/flashcard export in multiple formats, mind map JSON extraction.
 
 ## Three Ways to Use
 
@@ -105,7 +105,7 @@ For contributors or testing unreleased features:
 pip install git+https://github.com/teng-lin/notebooklm-py@main
 ```
 
-⚠️ The main branch may contain unstable changes. Use PyPI releases for production.
+âš ï¸ The main branch may contain unstable changes. Use PyPI releases for production.
 
 ## Quick Start
 
@@ -203,7 +203,7 @@ asyncio.run(main())
 
 ### Agent Setup
 
-**Option 1 — CLI install**:
+**Option 1 â€” CLI install**:
 
 ```bash
 notebooklm skill install
@@ -211,7 +211,7 @@ notebooklm skill install
 
 Installs the skill into `~/.claude/skills/notebooklm` and `~/.agents/skills/notebooklm`.
 
-**Option 2 — `npx` install** (via the open skills ecosystem):
+**Option 2 â€” `npx` install** (via the open skills ecosystem):
 
 ```bash
 npx skills add teng-lin/notebooklm-py
@@ -220,11 +220,22 @@ npx skills add teng-lin/notebooklm-py
 Fetches the canonical [SKILL.md](SKILL.md) directly from GitHub.
 
 
+## Deploy on Railway
+
+Railway deployment config is included in this repo:
+
+- `railway.toml` for build/start config
+- `Procfile` fallback (`web: python3 railway_server.py`)
+- `railway_server.py` minimal health server (`/health`)
+
+See [Railway Deployment Guide](docs/deploy-railway.md) for full setup.
+
 ## Documentation
 
 - **[CLI Reference](docs/cli-reference.md)** - Complete command documentation
 - **[Python API](docs/python-api.md)** - Full API reference
 - **[Configuration](docs/configuration.md)** - Storage and settings
+- **[Railway Deployment](docs/deploy-railway.md)** - Railway setup and health runtime
 - **[Release Guide](docs/releasing.md)** - Release checklist and packaging verification
 - **[Troubleshooting](docs/troubleshooting.md)** - Common issues and solutions
 - **[API Stability](docs/stability.md)** - Versioning policy and stability guarantees
@@ -241,9 +252,9 @@ Fetches the canonical [SKILL.md](SKILL.md) directly from GitHub.
 
 | Platform | Status | Notes |
 |----------|--------|-------|
-| **macOS** | ✅ Tested | Primary development platform |
-| **Linux** | ✅ Tested | Fully supported |
-| **Windows** | ✅ Tested | Tested in CI |
+| **macOS** | âœ… Tested | Primary development platform |
+| **Linux** | âœ… Tested | Fully supported |
+| **Windows** | âœ… Tested | Tested in CI |
 
 ## Star History
 
@@ -252,3 +263,6 @@ Fetches the canonical [SKILL.md](SKILL.md) directly from GitHub.
 ## License
 
 MIT License. See [LICENSE](LICENSE) for details.
+
+
+

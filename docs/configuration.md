@@ -1,4 +1,4 @@
-# Configuration
+﻿# Configuration
 
 **Status:** Active
 **Last Updated:** 2026-01-20
@@ -11,9 +11,9 @@ All data is stored under `~/.notebooklm/` by default:
 
 ```
 ~/.notebooklm/
-├── storage_state.json    # Authentication cookies and session
-├── context.json          # CLI context (active notebook, conversation)
-└── browser_profile/      # Persistent Chromium profile
+â”œâ”€â”€ storage_state.json    # Authentication cookies and session
+â”œâ”€â”€ context.json          # CLI context (active notebook, conversation)
+â””â”€â”€ browser_profile/      # Persistent Chromium profile
 ```
 
 You can relocate all files by setting `NOTEBOOKLM_HOME`:
@@ -139,15 +139,27 @@ notebooklm status --paths
 Output:
 ```
                 Configuration Paths
-┏━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━┓
-┃ File            ┃ Path                         ┃ Source    ┃
-┡━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━┩
-│ Home Directory  │ /home/user/.notebooklm      │ default   │
-│ Storage State   │ .../storage_state.json      │           │
-│ Context         │ .../context.json            │           │
-│ Browser Profile │ .../browser_profile         │           │
-└─────────────────┴──────────────────────────────┴───────────┘
+â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”³â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”³â”â”â”â”â”â”â”â”â”â”â”â”“
+â”ƒ File            â”ƒ Path                         â”ƒ Source    â”ƒ
+â”¡â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â•‡â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â•‡â”â”â”â”â”â”â”â”â”â”â”â”©
+â”‚ Home Directory  â”‚ /home/user/.notebooklm      â”‚ default   â”‚
+â”‚ Storage State   â”‚ .../storage_state.json      â”‚           â”‚
+â”‚ Context         â”‚ .../context.json            â”‚           â”‚
+â”‚ Browser Profile â”‚ .../browser_profile         â”‚           â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
 ```
+
+## Railway Deployment
+
+For Railway, this repository includes a web-runtime entrypoint that binds to `PORT`
+and serves `/health` and `/ready`.
+
+Recommended environment variables:
+
+- `NOTEBOOKLM_AUTH_JSON` (recommended for cloud)
+- `NOTEBOOKLM_HOME=/data/notebooklm` (when using a mounted volume)
+
+See [Railway Deployment](deploy-railway.md) for full instructions.
 
 ## Session Management
 
@@ -333,7 +345,7 @@ Browser login opens in the Windows host browser. The storage file is saved in th
 
 **Playwright is only required for the `notebooklm login` command.** All other operations use standard HTTP requests via `httpx`.
 
-This means you can run notebooklm on headless servers, Docker containers, and CI/CD environments without Playwright—just copy a valid `storage_state.json` or use `NOTEBOOKLM_AUTH_JSON`.
+This means you can run notebooklm on headless servers, Docker containers, and CI/CD environments without Playwrightâ€”just copy a valid `storage_state.json` or use `NOTEBOOKLM_AUTH_JSON`.
 
 ```bash
 # On headless machine - no Playwright needed
@@ -348,3 +360,5 @@ export NOTEBOOKLM_AUTH_JSON='{"cookies": [...]}'
 notebooklm list
 notebooklm ask "Summarize the sources"
 ```
+
+
