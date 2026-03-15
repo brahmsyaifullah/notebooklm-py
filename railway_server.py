@@ -511,6 +511,14 @@ async def _api_generate(payload: dict[str, Any]) -> dict[str, Any]:
         else:
             raise APIRequestError(f"Unsupported artifact type: {artifact_kind}", status=400)
 
+        status_state = getattr(status, "status", None)
+        status_failed = bool(getattr(status, "is_failed", False)) or status_state == "failed"
+        if status_failed:
+            err_msg = getattr(status, "error", None) or f"Generation failed for type: {artifact_kind}"
+            err_code = str(getattr(status, "error_code", "") or "")
+            http_status = 429 if err_code == "USER_DISPLAYABLE_ERROR" else 400
+            raise APIRequestError(err_msg, status=http_status)
+
         waited_status = None
         artifact = None
         if wait and status is not None and getattr(status, "task_id", None):
@@ -858,6 +866,7 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
 
 
 
