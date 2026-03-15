@@ -425,7 +425,7 @@ async def _api_generate(payload: dict[str, Any]) -> dict[str, Any]:
                 source_ids=source_ids,
                 language=language,
                 custom_prompt=options.get("custom_prompt"),
-                extra_instructions=options.get("extra_instructions"),
+                extra_instructions=options.get("extra_instructions") or instructions,
             )
         elif kind == "quiz":
             status = await client.artifacts.generate_quiz(
@@ -596,8 +596,10 @@ def _allowed_invoke_methods() -> dict[str, set[str]]:
             "generate_mind_map",
             "poll_status",
             "wait_for_completion",
+            "export",
             "export_report",
             "export_data_table",
+            "suggest_reports",
         },
         "research": {"start", "poll", "import_sources"},
         "notes": {"list", "get", "create", "update", "delete", "list_mind_maps", "delete_mind_map"},
@@ -644,6 +646,7 @@ def _coerce_invoke_kwargs(
             "slide_format": "SlideDeckFormat",
             "slide_length": "SlideDeckLength",
         },
+        ("artifacts", "export"): {"export_type": "ExportType"},
         ("artifacts", "export_report"): {"export_type": "ExportType"},
         ("chat", "set_mode"): {"mode": "ChatMode"},
         ("chat", "configure"): {
@@ -855,4 +858,6 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
+
 
