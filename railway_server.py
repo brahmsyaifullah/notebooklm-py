@@ -350,6 +350,122 @@ async def _api_list_artifacts(payload: dict[str, Any]) -> Any:
         return await client.artifacts.list(notebook_id, artifact_type=artifact_type)
 
 
+
+
+async def _api_download_artifact(payload: dict[str, Any]) -> dict[str, Any]:
+    """Download an artifact as base64. Uses notebooklm-py download_* methods directly."""
+    import base64
+    import tempfile
+    import os as _os
+
+    imports = _load_notebooklm_symbols()
+    NotebookLMClient = imports["NotebookLMClient"]
+
+    notebook_id  = str(payload.get("notebook_id")  or "").strip()
+    kind         = str(payload.get("kind")         or "").strip().lower().replace("-", "_")
+    artifact_id  = str(payload.get("artifact_id")  or "").strip() or None
+    output_format = str(payload.get("output_format") or "").strip().lower() or None
+
+    if not notebook_id or not kind:
+        raise APIRequestError("'notebook_id' and 'kind' are required", status=400)
+
+    # ── Mime helper ──────────────────────────────────────────────────────────
+    MIME = {
+        "mp3": "audio/mpeg", "wav": "audio/wav", "mp4": "video/mp4",
+        "pdf": "application/pdf", "png": "image/png",
+        "csv": "text/csv", "json": "application/json",
+        "md": "text/markdown", "html": "text/html",
+        "docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    }
+
+    async with await NotebookLMClient.from_storage() as client:
+        arts = client.artifacts
+        with tempfile.TemporaryDirectory() as tmpdir:
+
+            # ── Per-kind download call ────────────────────────────────────────
+            if kind == "audio":
+                ext = "mp3"
+                out = _os.path.join(tmpdir, f"audio.{ext}")
+                r = arts.download_audio(notebook_id, out)
+
+            elif kind == "video":
+                ext = "mp4"
+                out = _os.path.join(tmpdir, f"video.{ext}")
+                r = arts.download_video(notebook_id, out)
+
+            elif kind == "cinematic_video":
+                ext = "mp4"
+                out = _os.path.join(tmpdir, f"cinematic.{ext}")
+                r = arts.download_cinematic_video(notebook_id, out)
+
+            elif kind == "slide_deck":
+                # Only PDF is publicly downloadable; PPTX requires NotebookLM Plus
+                ext = "pdf"
+                out = _os.path.join(tmpdir, f"slides.{ext}")
+                r = arts.download_slide_deck(notebook_id, out)
+
+            elif kind in ("report", "study_guide"):
+                ext = "pdf"
+                out = _os.path.join(tmpdir, f"report.{ext}")
+                # download_report accepts optional artifact_id
+                kw: dict[str, Any] = {}
+                if artifact_id:
+                    kw["artifact_id"] = artifact_id
+                r = arts.download_report(notebook_id, out, **kw)
+
+            elif kind == "quiz":
+                fmt = output_format or "pdf"
+                ext = fmt
+                out = _os.path.join(tmpdir, f"quiz.{ext}")
+                r = arts.download_quiz(notebook_id, out, format=fmt)
+
+            elif kind == "flashcards":
+                fmt = output_format or "pdf"
+                ext = fmt
+                out = _os.path.join(tmpdir, f"flashcards.{ext}")
+                r = arts.download_flashcards(notebook_id, out, format=fmt)
+
+            elif kind == "infographic":
+                ext = "png"
+                out = _os.path.join(tmpdir, f"infographic.{ext}")
+                kw2: dict[str, Any] = {}
+                if artifact_id:
+                    kw2["artifact_id"] = artifact_id
+                r = arts.download_infographic(notebook_id, out, **kw2)
+
+            elif kind == "data_table":
+                ext = "csv"
+                out = _os.path.join(tmpdir, f"data_table.{ext}")
+                r = arts.download_data_table(notebook_id, out)
+
+            elif kind == "mind_map":
+                ext = "json"
+                out = _os.path.join(tmpdir, f"mind_map.{ext}")
+                r = arts.download_mind_map(notebook_id, out)
+
+            else:
+                raise APIRequestError(f"Unsupported artifact kind: {kind}", status=400)
+
+            if inspect.isawaitable(r):
+                await r
+
+            if not _os.path.exists(out) or _os.path.getsize(out) == 0:
+                raise APIRequestError(
+                    f"download_{kind} wrote no output — artifact may still be processing",
+                    status=500,
+                )
+
+            with open(out, "rb") as fh:
+                raw = fh.read()
+
+    return {
+        "kind": kind,
+        "ext": ext,
+        "mime": MIME.get(ext, "application/octet-stream"),
+        "size_bytes": len(raw),
+        "content": base64.b64encode(raw).decode("ascii"),
+    }
+
 async def _api_generate(payload: dict[str, Any]) -> dict[str, Any]:
     imports = _load_notebooklm_symbols()
     NotebookLMClient = imports["NotebookLMClient"]
@@ -726,6 +842,7 @@ def _capabilities_payload() -> dict[str, Any]:
                 f"{API_PREFIX}/ask",
                 f"{API_PREFIX}/generate",
                 f"{API_PREFIX}/artifacts",
+                f"{API_PREFIX}/download",
                 f"{API_PREFIX}/invoke",
             ],
             "invoke_namespaces": {k: sorted(v) for k, v in allowed.items()},
@@ -821,6 +938,8 @@ class Handler(BaseHTTPRequestHandler):
             return asyncio.run(_api_generate(payload))
         if path == f"{API_PREFIX}/artifacts":
             return asyncio.run(_api_list_artifacts(payload))
+        if path == f"{API_PREFIX}/download":
+            return asyncio.run(_api_download_artifact(payload))
         if path == f"{API_PREFIX}/invoke":
             return asyncio.run(_api_invoke(payload))
         raise APIRequestError("Not found", status=404)
@@ -866,7 +985,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-
-
-
-
